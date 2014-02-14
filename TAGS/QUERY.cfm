@@ -73,7 +73,7 @@ Radmis Pty Ltd, www.radmis.com
 	 	<cfif Caller.CYErrors EQ "[]"><cfset Caller.CYErrors = ""></cfif>
 	</cfif>
 
-	<cfif Caller.CYErrors NEQ "">
+	<cfif Caller.CYErrors NEQ "" AND isDefined("jsonData.Errors")>
 		<!--------Parse Error Message------------>
 		<cfset err=jsonData.Errors>
 		<cfset err1=err[1].message>
