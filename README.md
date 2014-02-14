@@ -1,4 +1,4 @@
-CYQUERY
-=======
+CY:QUERY
+===+====
 
-ColdFusion support for Cypher and Neo4j Graph DB
+Cold Fusion support for Cypher and Neo4j Graph DB
