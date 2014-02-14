@@ -565,7 +565,7 @@ id(a) AS Node1ID,
 labels(a) AS Node1Label,
 a AS Node1Property,
 id(r) AS RelationID,
-type(r) AS Relation,
+type(r) AS RelationType,
 r AS RelationProperty,
 id(b) AS Node2ID,
 labels(b) AS Node2Label,
@@ -584,7 +584,7 @@ id(n) AS Node1ID,
 labels(n) AS Node1Label,
 n AS Node1Property ,
 null AS RelationID,
-null AS Relation,
+null AS RelationType,
 null AS RelationProperty,
 null AS Node2ID,
 null AS Node2Label,
@@ -606,10 +606,12 @@ LIMIT 100
 Return Types
 
 id(node) 		NodeID				int
-labels(node) 	NodeLanel			array of labels
+labels(node) 	NodeLabel			array of labels
 node 			NodeProperty		structure of properties
 id(relation) 	RelationID			int
-type(relation) 	Relation			string
+type(relation) 	RelationType		string
 relation 		RelationProperty	structure of properties
-path 			Path				array of: first node structure, relation structure and second node structure
+path 			Path				array of: first node properties structure,
+											  relation properties structure and
+											  second node properties structure
 --->
