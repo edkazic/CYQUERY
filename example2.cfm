@@ -50,18 +50,37 @@ LIMIT 1000
 
 
 <!---
-The returned JSON Object is orgnised in complex combination of structures and arrays.
-The Cold Fusion Object is returned as a results[1].data[].column[] array of rows each representing set of columns from the result Cyper records.
-Column List can be retrieved as results[1].columns[] array
+The returned ColdFusion Object is conforming standard ColdFusion query structure.
+In addition the variable CYErrors is available immediatly after CY:QUERY execution.
 
+The ColdFusion object is named using the "name" variable from the CY:QUERY and it is represented as a table of records and columns.
+Specifically The Cold Fusion Object is built on results[1].data[records].row[columns] JSON matrix.
 
+Access to each value in the CF result set is achieved using standard CF syntax "queryname.columnname".
+
+Looping through reords can be done eg using <CFLOOP query="queryName">
+and accessing columns by referencing queryName.Column1, queryName.column2 etc.
+
+Query variables are also available:
+- queryName.ColumnList
+- queryName.RecordCount
+- queryName.CurrentRow (eg within the LOOP)
+
+In addition Query of Query can be used on the record set for aditional data processing using standard SQL.
+
+Resulting value for each "cell" can be complex structure and it is dependent on the Cypher request as follows:
+
+ReturnValueType ExampleReturnNames	ValueStructure
+--------------- ------------------- ----------------------
 id(node) 		NodeID				int
 labels(node) 	NodeLabel			array of labels
-node 			NodeProperty		structure of properties
+node 			NodeProperty		structure of properties (a propery can be single or an array of values)
 id(relation) 	RelationID			int
 type(relation) 	RelationType		string
-relation 		RelationProperty	structure of properties
-path 			Path				array of: first node properties structure,
-											  relation properties structure and
-											  second node properties structure
+relation 		RelationProperty	structure of properties (a propery can be single or an array of values)
+path 			Path				array of structures: first node structure of properties,
+											  			 relation structure of properties and
+											  			 second node structure of properties
+
+
 --->

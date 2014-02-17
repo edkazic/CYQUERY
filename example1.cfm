@@ -605,8 +605,14 @@ LIMIT 1000
 
 <!---
 The returned JSON Object is orgnised in complex combination of structures and arrays.
-The Cold Fusion Object is returned as a results[1].data[records].row[columns] array of rows each representing set of columns from the Cyper result set records.
-Column List can be retrieved as results[1].columns[] array
+
+The common data structure components (always present in the returned set) are:
+
+errors[1] - Array of Errors. It is empty if there are no errors.
+results[1].columns[] - Array of Column names as defined in Cypher query.
+results[1].data[records].row[columns] - Array of records each representing set of columns from the Cypher result set.
+										This can be seen as a table with dimensions records x columns
+
 
 So we can see the return structure as set of records each with columns.
 Columns (within records) are dependent on the type of the requested data and it is represented as:
@@ -618,7 +624,7 @@ id(relation) 	RelationID			int
 type(relation) 	RelationType		string
 relation 		RelationProperty	structure of properties
 path 			Path				array of: first node properties structure,
-											  relation properties structure and
+											  relation structure of properties  and
 											  second node properties structure
 --->
 
