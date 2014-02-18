@@ -3,6 +3,7 @@
 
 
 <!---Get ALL data from the database---->
+<!---if returnFormat is not defined the returning set is ColdFusion object---->
 
 <CY:QUERY name="DumpAll">
 //Match all nodes and relations
@@ -51,17 +52,17 @@ LIMIT 1000
 
 <!---
 The returned ColdFusion Object is conforming standard ColdFusion query structure.
-In addition the variable CYErrors is available immediatly after CY:QUERY execution.
+In addition the variables CYErrors and CYExecutionTime are available immediatly after CY:QUERY execution.
 
-The ColdFusion object is named using the "name" variable from the CY:QUERY and it is represented as a table of records and columns.
-Specifically The Cold Fusion Object is built on results[1].data[records].row[columns] JSON matrix.
+The ColdFusion object is named using the "name" variable from the CY:QUERY and the object is returned as a table of records and columns.
+Specifically the Cold Fusion Object is built on results[1].data[records].row[columns] JSON matrix.
 
-Access to each value in the CF result set is achieved using standard CF syntax "queryname.columnname".
+Access to each property value in the CF result set is achieved using standard CF syntax "queryname.columnname".
 
 Looping through reords can be done eg using <CFLOOP query="queryName">
-and accessing columns by referencing queryName.Column1, queryName.column2 etc.
+and accessing columns is done by referencing queryName.Column1, queryName.column2 etc.
 
-Query variables are also available:
+CF Query variables are also available:
 - queryName.ColumnList
 - queryName.RecordCount
 - queryName.CurrentRow (eg within the LOOP)

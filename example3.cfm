@@ -40,32 +40,32 @@ null 		AS Path
 LIMIT 1000
 </CY:QUERY>
 
-<CFIF CYErrors NEQ "">
+<cfif CYErrors NEQ "">
 	<CFOUTPUT>#CYErrors#</CFOUTPUT>
 	<CFABORT>
-</CFIF>
+</cfif>
 
 
 <CFOUTPUT>
-<!---Display data in the table---->
+<!---Parse returned data and display in the standard HTML table---->
 <table border=1>
 
 <!---Create header for the table--->
 <tr>
-<TD>Node1ID</TD><TD>Node1Label</TD><TD>Node1Property</TD><TD>RelationID</TD><TD>RelationType</TD><TD>RelationProperty</TD><TD>Node2ID</TD><TD>Node2Label</TD><TD>Node2Property</TD>
-
-<!----We could use something like:
-<CFLOOP list="#DumpAll.ColumnList#" index="token">
-<TD>#token#</TD>
-</CFLOOP>
-This would dump all column titles for the table header but then wa would not be sure in which order column titles will come?
+<!----To create the header we could use something like:
+<cfloop list="#DumpAll.ColumnList#" index="token">
+<td>#token#</td>
+</cfloop>
+This would dump all column titles for the table header but then we would not be sure in which order column titles will come?
 Also we want to skip "path" column for this example so it is appropriate to make the table header manually.
 ---->
+
+<td>Node1ID</td><td>Node1Label</td><td>Node1Property</td><td>RelationID</td><td>RelationType</td><td>RelationProperty</td><td>Node2ID</td><td>Node2Label</td><td>Node2Property</td>
 </tr>
 
 
-<!---Loop through the records and for each record create a table row with columns---->
-<CFLOOP query="DumpAll">
+<!---Loop through the CY:QUERY records and for each record create a table row with columns---->
+<cfloop query="DumpAll">
 <tr>
 
 <!---Node1ID--->
@@ -73,71 +73,70 @@ Also we want to skip "path" column for this example so it is appropriate to make
 
 <!---Node1Label--->
 <td>
-<CFIF IsJSON(DumpAll.Node1Label)>
-<CFSET data=#deserializeJSON(DumpAll.Node1Label)#>
-	<CFIF IsArray(data)>
-		<CFLOOP array="#data#" index="token">
+<cfif IsJSON(DumpAll.Node1Label)>
+<cfset data=#deserializeJSON(DumpAll.Node1Label)#>
+	<cfif IsArray(data)>
+		<cfloop array="#data#" index="token">
 			#token#<br>
-		</CFLOOP>
-	</CFIF>
-</CFIF>
+		</cfloop>
+	</cfif>
+</cfif>
 </td>
 
 <!---Node1Property--->
 <!---
-Structure of propertie values (either node or relation) returned from Cypher query can be formated as simple value or Array
+Structure of propertie values (either node or relation) returned from Cypher query can be formated as simple value or as an Array
 Here is an example of relation property "role" that is defined as array of values (note squre brackets after role:)
+
 CREATE
   (TomH)-[:ACTED_IN {roles:['Hero Boy', 'Father', 'Conductor', 'Hobo', 'Scrooge', 'Santa Claus']}]->(ThePolarExpress),
-And here is an example of node property defined as structure of "summary" and "rating" simple value properties
+
+And here is an example of node property defined as structure of "summary" and "rating" with simple value properties
+
 CREATE
   (JessicaThompson)-[:REVIEWED {summary:'An amazing journey', rating:95}]->(CloudAtlas),
-It is required to check for the return type for nodes and relations properties.
+
+To properly extract data it is required to check for the return type for nodes and relations properties.
 --->
 <td>
-<CFIF IsJSON(DumpAll.Node1Property)>
-<CFSET data=#deserializeJSON(DumpAll.Node1Property)#>
-	<CFIF IsStruct(data)>
-		<CFLOOP list="#structKeyList(data)#" index="token">
-			<CFIF IsArray(Evaluate("data.#token#"))><!---check if properties are in array--->
-				<CFLOOP array="#Evaluate("data.#token#")#" index="token2"><!---Loop through the array--->
+<cfif IsJSON(DumpAll.Node1Property)>
+<cfset data=#deserializeJSON(DumpAll.Node1Property)#>
+	<cfif IsStruct(data)>
+		<cfloop list="#structKeyList(data)#" index="token">
+			<cfif IsArray(Evaluate("data.#token#"))><!---check if properties are in array form--->
+				<cfloop array="#Evaluate("data.#token#")#" index="token2"><!---Loop through the array--->
 					#token#: #token2#<br>
-				</CFLOOP>
-			<CFELSE>  <!---simple value--->
+				</cfloop>
+			<cfelse>  <!---simple value--->
 					#token#: #Evaluate("data.#token#")#<br>
-			</CFIF>
-		</CFLOOP>
-	</CFIF>
-</CFIF>
+			</cfif>
+		</cfloop>
+	</cfif>
+</cfif>
 </td>
 
 <!---RelationID--->
 <td>#DumpAll.RelationID#</td>
 
 <!---RelationType--->
-<CFIF IsJSON(DumpAll.RelationType)>
-	<CFSET data=#deserializeJSON(DumpAll.RelationType)#>
-<CFELSE>
-	<CFSET data=""><!---Relation Type is not defined--->
-</CFIF>
-<td>#data#</td>
+<td>#DumpAll.RelationType#</td>
 
 <!---RelationProperty--->
 <td>
-<CFIF IsJSON(DumpAll.RelationProperty)>
-<CFSET data=#deserializeJSON(DumpAll.RelationProperty)#>
-	<CFIF IsStruct(data)>
-		<CFLOOP list="#structKeyList(data)#" index="token">
-			<CFIF IsArray(Evaluate("data.#token#"))>
-				<CFLOOP array="#Evaluate("data.#token#")#" index="token2">
+<cfif IsJSON(DumpAll.RelationProperty)>
+<cfset data=#deserializeJSON(DumpAll.RelationProperty)#>
+	<cfif IsStruct(data)>
+		<cfloop list="#structKeyList(data)#" index="token">
+			<cfif IsArray(Evaluate("data.#token#"))>
+				<cfloop array="#Evaluate("data.#token#")#" index="token2">
 					#token#: #token2#<br>
-				</CFLOOP>
-			<CFELSE>
+				</cfloop>
+			<cfelse>
 					#token#: #Evaluate("data.#token#")#<br>
-			</CFIF>
-		</CFLOOP>
-	</CFIF>
-</CFIF>
+			</cfif>
+		</cfloop>
+	</cfif>
+</cfif>
 </td>
 
 <!---Node2ID--->
@@ -145,51 +144,41 @@ It is required to check for the return type for nodes and relations properties.
 
 <!---Node2Label--->
 <td>
-<CFIF IsJSON(DumpAll.Node2Label)>
-<CFSET data=#deserializeJSON(DumpAll.Node2Label)#>
-	<CFIF IsArray(data)>
-		<CFLOOP array="#data#" index="token">
+<cfif IsJSON(DumpAll.Node2Label)>
+<cfset data=#deserializeJSON(DumpAll.Node2Label)#>
+	<cfif IsArray(data)>
+		<cfloop array="#data#" index="token">
 			#token#<br>
-		</CFLOOP>
-	</CFIF>
-</CFIF>
+		</cfloop>
+	</cfif>
+</cfif>
 </td>
 
 <!---Node2Property--->
 <td>
-<CFIF IsJSON(DumpAll.Node2Property)>
-<CFSET data=#deserializeJSON(DumpAll.Node2Property)#>
-	<CFIF IsStruct(data)>
-		<CFLOOP list="#structKeyList(data)#" index="token">
-			<CFIF IsArray(Evaluate("data.#token#"))>
-				<CFLOOP array="#Evaluate("data.#token#")#" index="token2">
+<cfif IsJSON(DumpAll.Node2Property)>
+<cfset data=#deserializeJSON(DumpAll.Node2Property)#>
+	<cfif IsStruct(data)>
+		<cfloop list="#structKeyList(data)#" index="token">
+			<cfif IsArray(Evaluate("data.#token#"))>
+				<cfloop array="#Evaluate("data.#token#")#" index="token2">
 					#token#: #token2#<br>
-				</CFLOOP>
-			<CFELSE>
+				</cfloop>
+			<cfelse>
 					#token#: #Evaluate("data.#token#")#<br>
-			</CFIF>
-		</CFLOOP>
-	</CFIF>
-</CFIF>
+			</cfif>
+		</cfloop>
+	</cfif>
+</cfif>
 </td>
 
-
-
-
-
-
-
-
-
-
-
 </tr>
-</CFLOOP>
+</cfloop>
 </table>
 </CFOUTPUT>
 
 <!---
-In this example we can see how we can parse different return types and extract information.
+In this example we demonstrated how to parse different return types of return variables and extract information.
 
 ReturnValueType ExampleReturnNames	ValueStructure
 --------------- ------------------- ----------------------

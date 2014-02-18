@@ -1,18 +1,18 @@
 <cfimport taglib="./TAGS" prefix="CY">
 
+<!---Here we have functions for parsing different property types grouped together for more convenience--->
 <cfscript>
 /*----------------------*/
 function getID(data) {
 var ret=data;
+if(ret NEQ "") ret=val(ret);
     return ret;
 }
 
 /*----------------------*/
-function getRelationType(data) {
-var ret="";
-if(isJSON(data))
-    ret=deserializeJSON(data);
-return ret;
+function getString(data) {
+var ret=Trim(data);
+    return ret;
 }
 
 /*----------------------*/
@@ -42,14 +42,14 @@ var ret="";
 		var list=listToArray(structKeyList(buf));
 		for (j = 1; j <= arrayLen(list); j++)
 			{
-			if(isArray(Evaluate("buf.#list[j]#")))
+			if(isArray(evaluate("buf.#list[j]#")))
 				{
-				var arr=Evaluate("buf.#list[j]#");
+				var arr=evaluate("buf.#list[j]#");
 				  	  for (i = 1; i <= arrayLen(arr); i++)
-						ret = ret & list[j] & ':' & arr[i] & '<br>';
+						ret = ret & list[j] & ': ' & arr[i] & '<br>';
 				}
 				else {
-						ret=ret & list[j]  & ':' & evaluate("buf.#list[j]#") & '<br>';
+						ret=ret & list[j]  & ': ' & evaluate("buf.#list[j]#") & '<br>';
 				}
 			}
 		}
@@ -76,7 +76,8 @@ r 			AS RelationProperty,
 id(b) 		AS Node2ID,
 labels(b) 	AS Node2Label,
 b 			AS Node2Property,
-p 			AS Path
+p 			AS Path,
+a.name		AS Name //this is an additional field
 LIMIT 1000
 
 //////////////////////////////////////
@@ -95,32 +96,37 @@ null 		AS RelationProperty,
 null 		AS Node2ID,
 null 		AS Node2Label,
 null 		AS Node2Property,
-null 		AS Path
+null 		AS Path,
+n.name		AS Name
 LIMIT 1000
 </CY:QUERY>
 
-<CFIF CYErrors NEQ "">
+<cfif CYErrors NEQ "">
 	<CFOUTPUT>#CYErrors#</CFOUTPUT>
 	<CFABORT>
-</CFIF>
+</cfif>
 
 
 <!---
-The following is an example of "Query of Query" where CY:QUERY data set is queried with CF SQL engine and sorted by Node1Property.
-It is not strictly correct as Node1Property is complex object but it is good enough as an example.
+In this example we demonstrate "Query of Query" (CF feature) where CY:QUERY data set is queried with CF SQL engine and data set is sorted by Name.
+The Name is "lowered" to low case as SQL query sort is case sensitive.
 --->
 
 
 <CFQUERY name="DumpAll" dbtype = "query">
-SELECT * FROM CYDumpAll
-ORDER BY Node1Property
+SELECT lower(NAME), NODE1ID, NODE1LABEL, NODE1PROPERTY, RELATIONID, RELATIONPROPERTY, RELATIONTYPE, NODE2ID, NODE2LABEL, NODE2PROPERTY
+FROM CYDumpAll
+ORDER BY NAME
 </CFQUERY>
 
-
+<!---
+We can "dump" complete CF object as:
+<cfdump var="#DumpAll#">
+--->
 
 <!---
-The following is the way to display data on the screen in the same way as in the previous example
-except this time inline CF tags are replaced with script functions for simplicity.
+The following is the alternative way to display data on the screen.
+This time inline CF tags are replaced with script functions for simplicity.
 --->
 
 
@@ -130,7 +136,7 @@ except this time inline CF tags are replaced with script functions for simplicit
 
 <!---Create header for the table--->
 <tr>
-<TD>Node1ID</TD><TD>Node1Label</TD><TD>Node1Property</TD><TD>RelationID</TD><TD>RelationType</TD><TD>RelationProperty</TD><TD>Node2ID</TD><TD>Node2Label</TD><TD>Node2Property</TD>
+<td>Node1ID</td><td>Node1Label</td><td>Node1Property</td><td>RelationID</td><td>RelationType</td><td>RelationProperty</td><td>Node2ID</td><td>Node2Label</td><td>Node2Property</td>
 </tr>
 
 <!---Loop through the records and for each record create a table row with columns---->
@@ -149,7 +155,7 @@ except this time inline CF tags are replaced with script functions for simplicit
 <td>#getID(DumpAll.RelationID)#</td>
 
 <!---RelationType--->
-<td>#getRelationType(DumpAll.RelationType)#</td>
+<td>#getString(DumpAll.RelationType)#</td>
 
 <!---RelationProperty--->
 <td>#getProperty(DumpAll.RelationProperty)#</td>

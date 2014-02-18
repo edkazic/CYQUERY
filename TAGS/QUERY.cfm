@@ -17,9 +17,10 @@ Usage:
 
 - The query will return object GetNodes (attribute name) that is formated as Cold Fusion CFQUERY object
 - Use returnFormat="JSON" (eg. <CY:QUERY name="GetNodes" returnFormat="JSON">)
-  if you would like to return JSON object instead of query object
+  if you would like to return JSON object instead of CF query object
 - Variable CYErrors will be returned with any errors or it will be empty for no errors
-- Change Connection URLDB below for different Neo4j server location
+- Variable CYExecutionTime contains time in seconds
+- If required change Connection URLDB below for different Neo4j server location
 
 Author: Ed Kazic
 Radmis Pty Ltd, www.radmis.com
@@ -33,6 +34,9 @@ Radmis Pty Ltd, www.radmis.com
 <!-----Execute at the end of CY:QUERY tag----------------------------------------------->
 <cfif thisTag.ExecutionMode is 'end'>
 
+<cfset Caller.CYExecutionTime="">
+<cfset tickStart=GetTickCount()>
+<CFTRY>
 	   <!---Check for compulsory parameter---->
 <cfif IsDefined("Attributes.name")>
 
@@ -62,6 +66,7 @@ Radmis Pty Ltd, www.radmis.com
         <cfset "Caller.#cyQuery#"="">
 
 		<!---------Call Neo4j DB---------------->
+		<cftry>
 		<cfhttp url="#URLDB#" method="post" result="httpResp" timeout="600000" >
 		    <cfhttpparam type="HEADER" name="Content-Type" value="application/json; charset=UTF-8">
 	    	<cfhttpparam type="body" value="#serializeJSON(stFields)#">
@@ -71,14 +76,17 @@ Radmis Pty Ltd, www.radmis.com
 	 	<cfset jsonData = deserializeJSON(httpResp.fileContent) />
 	 	<cfset Caller.CYErrors = serializeJSON(jsonData.errors) />
 	 	<cfif Caller.CYErrors EQ "[]"><cfset Caller.CYErrors = ""></cfif>
+
+		<cfcatch><cfset Caller.CYErrors='ERROR: Neo4j Server problem? '></cfcatch>
+		</cftry>
 	</cfif>
 
 	<cfif Caller.CYErrors NEQ "" AND isDefined("jsonData.Errors")>
 		<!--------Parse Error Message------------>
 		<cfset err=jsonData.Errors>
 		<cfset err1=err[1].message>
-		<cfset poz1=Find('"',err1,1)-1> 					<!---find first--->
 		<cfset poz2=Len(err1)-Find('"',reverse(err1),1)>  	<!---find last--->
+		<cfset poz1=Len(err1)-Find('"',reverse(err1),Len(err1)-poz2+1)>
 		<cfset poz3=Find('column',err1,1)>
 		<cfset rpoz=Val(Mid(err1,poz3+7,10))>
 		<cfif poz1 NEQ -1 AND poz2 NEQ -1 AND poz3 NEQ -1 AND rpoz NEQ 0>
@@ -97,8 +105,9 @@ Radmis Pty Ltd, www.radmis.com
 		 <cfset "Caller.#cyQuery#"=jsonData>
 	<cfelse>
 
-		<cfif Caller.CYErrors EQ "">
+		<cfif Caller.CYErrors EQ "" and not ArrayIsEmpty(jsonData.results)>
 			<!-----Create a query set (using results from Neo4j) that would be returned back---->
+
 			<cfset ColumnsLen=ArrayLen(jsonData.results[1].columns)>
 			<cfset Columns=jsonData.results[1].columns>
 			<cfset RecordsLen=ArrayLen(jsonData.results[1].data)>
@@ -121,12 +130,15 @@ Radmis Pty Ltd, www.radmis.com
 				<cfset newRow = QueryAddRow(retQuery, 1)>
 					<cfloop index="x" from="1" to="#ColumnsLen#">
 						<cfset tmpCol="">
-						<cfif IsArray("#Records[y].row#")>
 							<cftry>
-								<cfset tmpCol=#serializeJSON(Records[y].row[x])#>
-							<cfcatch><cfset tmpCol=''></cfcatch>
+								<cfif IsArray("#Records[y].row[x]#") OR IsStruct("#Records[y].row[x]#")>
+									<cfset tmpCol=#serializeJSON(Records[y].row[x])#>
+								<cfelse>
+									<cfset tmpCol=#Records[y].row[x]#>
+								</cfif>
+							<cfcatch><cfset tmpCol=""></cfcatch>
 							</cftry>
-						</cfif>
+
 						<cfset temp = QuerySetCell(retQuery,"#REreplace(Columns[x], "[^a-zA-Z0-9]","_","all")#","#tmpCol#")>
 					</cfloop>
 				</cfloop>
@@ -140,6 +152,11 @@ Radmis Pty Ltd, www.radmis.com
 	<cfset Caller.CYErrors='ERROR: Query name is compulsory? eg. <CY:QUERY name="qname">...</CY:QUERY> '>
 </cfif>
 
+
+<CFCATCH><cfset Caller.CYErrors='ERROR: Unknown Processing Error?'></CFCATCH>
+</CFTRY>
+<CFSET tickEnd=GetTickCount()>
+<cfset Caller.CYExecutionTime=(tickEnd-tickStart)/1000>
 <cfset thisTag.GeneratedContent=""> <!---Remove the content within QUERY TAG---->
 
 </cfif>

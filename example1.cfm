@@ -2,7 +2,7 @@
 
 <CFSET DeleteAll=false>
 
-<!---If "DeleteAll" is set to true this will delete all nodes and all relations in your Neo4j DB------>
+<!---If "DeleteAll" variable above is set to "true" this will delete ALL nodes and ALL relations in your Neo4j DB------>
 <CFIF DeleteAll>
 	<CY:QUERY name="DeleteAll">
 		MATCH (n)
@@ -30,8 +30,8 @@
 </CFIF>
 
 <!----Create movies DB. ---->
-<!----The CY:QUERY "movies" below will create movies and if it run multiple times each time whole set will be added to the DB.--->
-<!----Checking for the existance of the movie "The Matrix" is the way to check if the movies data has already been created in the DB---->
+<!----The CY:QUERY named "movies" below will create movies set in the DB. If it is run multiple times each time whole movie set will be added to the DB.--->
+<!----Checking for the existance of the movie "The Matrix" can be used to check if the movies data has already been created in the DB---->
 <CFIF check.MatrixCnt GT 0>
 <CFOUTPUT>The movie "The Matrix" is already in the DB<CFIF check.MatrixCnt GT 1> (#check.MatrixCnt# times)</CFIF>!<BR></CFOUTPUT>
 <CFELSE>
@@ -557,6 +557,7 @@ RETURN TheMatrix
 
 
 <!---Get ALL data from the database in JSON format---->
+<!---note attribute returnFormat="JSON" in the CY:QUERY---->
 
 <CY:QUERY name="DumpAll" returnFormat="JSON">
 //Match all nodes and relations
@@ -610,22 +611,23 @@ The common data structure components (always present in the returned set) are:
 
 errors[1] - Array of Errors. It is empty if there are no errors.
 results[1].columns[] - Array of Column names as defined in Cypher query.
-results[1].data[records].row[columns] - Array of records each representing set of columns from the Cypher result set.
+results[1].data[records].row[columns] - Array of records each representing set of columns from the Cypher query.
 										This can be seen as a table with dimensions records x columns
 
 
-So we can see the return structure as set of records each with columns.
-Columns (within records) are dependent on the type of the requested data and it is represented as:
+Examining columns content there could be various formats returned:
 
+ReturnValueType ExampleReturnNames	ValueStructure
+--------------- ------------------- ----------------------
 id(node) 		NodeID				int
 labels(node) 	NodeLabel			array of labels
-node 			NodeProperty		structure of properties
+node 			NodeProperty		structure of properties (a propery can be single or an array of values)
 id(relation) 	RelationID			int
 type(relation) 	RelationType		string
-relation 		RelationProperty	structure of properties
-path 			Path				array of: first node properties structure,
-											  relation structure of properties  and
-											  second node properties structure
+relation 		RelationProperty	structure of properties (a propery can be single or an array of values)
+path 			Path				array of structures: first node structure of properties,
+											  			 relation structure of properties and
+											  			 second node structure of properties
 --->
 
 
