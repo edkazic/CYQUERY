@@ -92,30 +92,196 @@ The returned result set will be formatted in CF Query object and result of this 
 <p>In this example we will learn how to create standard movies database.
 In addition there are functions for deleting all data from the DB, examples of CYErrors use to test your CY:QUERY execution, returning object in JSON format as well as analysis of returned data set.</p>
 
+<p>Delete ALL nodes and ALL relations from the DB</p>
+
+<pre><code>    &lt;CY:QUERY name="DeleteAll"&gt;
+        MATCH (n)
+        OPTIONAL MATCH (n-[r]-())
+        DELETE n,r
+    &lt;/CY:QUERY&gt;
+
+    &lt;CFIF CYErrors NEQ ""&gt;
+        &lt;CFOUTPUT&gt;#CYErrors#&lt;/CFOUTPUT&gt;
+        &lt;CFABORT&gt;
+    &lt;/CFIF&gt;
+</code></pre>
+
 <h1>
 <a name="example2" class="anchor" href="#example2"><span class="octicon octicon-link"></span></a>Example2</h1>
 
 <p>In Example 2 we will explore CF object return type for the movies database.</p>
+
+<p>Get entire content of your Neo4j DB (you would have to remove LIMIT 1000 clause if required)</p>
+
+<pre><code>&lt;CY:QUERY name="DumpAll"&gt;
+//Match all nodes and relations
+MATCH p=(a)-[r]-&gt;(b)
+RETURN
+    id(a)     AS Node1ID,
+    labels(a) AS Node1Label,
+    a         AS Node1Property,
+    id(r)     AS RelationID,
+    type(r)   AS RelationType,
+    r         AS RelationProperty,
+    id(b)     AS Node2ID,
+    labels(b) AS Node2Label,
+    b         AS Node2Property,
+    p         AS Path
+LIMIT 1000
+
+//////////////////////////////////////
+UNION
+//////////////////////////////////////
+
+//Match all nodes with no relations
+MATCH (n) where not( n--() )
+RETURN
+    id(n)     AS Node1ID,
+    labels(n) AS Node1Label,
+    n         AS Node1Property,
+    null      AS RelationID,
+    null      AS RelationType,
+    null      AS RelationProperty,
+    null      AS Node2ID,
+    null      AS Node2Label,
+    null      AS Node2Property,
+    null      AS Path
+LIMIT 1000
+&lt;/CY:QUERY&gt;
+</code></pre>
 
 <h1>
 <a name="example3" class="anchor" href="#example3"><span class="octicon octicon-link"></span></a>Example3</h1>
 
 <p>In Example 3 we will explore various return data types within CF object and present few ideas for parsing data.</p>
 
-<h1>
+<p>Return Data Types</p>
+
+<table>
+<thead><tr>
+<th>ReturnValueType</th>
+<th>ExampleReturnNames</th>
+<th>ValueStructure</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>id(node)</td>
+<td>NodeID</td>
+<td>int</td>
+</tr>
+<tr>
+<td>labels(node)</td>
+<td>NodeLabel</td>
+<td>array of labels</td>
+</tr>
+<tr>
+<td>node</td>
+<td>NodeProperty</td>
+<td>structure of properties (a property can be single or an array of values)</td>
+</tr>
+<tr>
+<td>id(relation)</td>
+<td>RelationID</td>
+<td>int</td>
+</tr>
+<tr>
+<td>type(relation)</td>
+<td>RelationType</td>
+<td>string</td>
+</tr>
+<tr>
+<td>relation</td>
+<td>RelationProperty</td>
+<td>structure of properties (a property can be single or an array of values)</td>
+</tr>
+<tr>
+<td>path</td>
+<td>Path</td>
+<td>array of structures: first node structure of properties, relation structure of properties and second node structure of properties</td>
+</tr>
+</tbody>
+</table><h1>
 <a name="example4" class="anchor" href="#example4"><span class="octicon octicon-link"></span></a>Example4</h1>
 
 <p>In Example 4 we will further improve on parsing data functions and introduce Query of Query applied on CY:QUERY</p>
+
+<p>Example function for interpreting properties (either Node or Relation)</p>
+
+<pre><code>function getProperty(data) {
+var ret="";
+
+ if(isJSON(data))
+    {
+    var buf=deserializeJSON(data);
+    if(isStruct(buf))
+       {
+        var list=listToArray(structKeyList(buf));
+        for (j = 1; j &lt;= arrayLen(list); j++)
+            {
+            if(isArray(evaluate("buf.#list[j]#")))
+                {
+                var arr=evaluate("buf.#list[j]#");
+                      for (i = 1; i &lt;= arrayLen(arr); i++)
+                        ret = ret &amp; list[j] &amp; ': ' &amp; arr[i] &amp; '&lt;br&gt;';
+                }
+                else {
+                        ret=ret &amp; list[j]  &amp; ': ' &amp; evaluate("buf.#list[j]#") &amp; '&lt;br&gt;';
+                }
+            }
+        }
+    }
+return ret;
+}
+&lt;/cfscript&gt;
+</code></pre>
 
 <h1>
 <a name="example5" class="anchor" href="#example5"><span class="octicon octicon-link"></span></a>Example5</h1>
 
 <p>This time we will introduce powerful Query of Query "linked tables" feature for two CY:QUERY data sets.</p>
 
+<p>CF Query where two retrieved CY:QUERY sets (CYNodesOut and CYNodesIn) are linked by RelationID and resulting set sorted by the age of the actor.</p>
+
+<pre><code>&lt;CFQUERY name="DumpAll" dbtype = "query"&gt;
+SELECT  CYNodesOut.NodeID       AS Node1ID,
+    CYNodesOut.NodeLabel        AS Node1Label,
+    CYNodesOut.NodeProperty     AS Node1Property,
+    CYNodesOut.RelationID       AS RelationID,
+    CYNodesOut.RelationType     AS RelationType,
+    CYNodesOut.RelationProperty AS RelationProperty,
+    CYNodesIn.NodeID            AS Node2ID,
+    CYNodesIn.NodeLabel         AS Node2Label,
+    CYNodesIn.NodeProperty      AS Node2Property,
+    lower(CYNodesOut.Born)      AS Born
+FROM CYNodesOut, CYNodesIn
+WHERE CYNodesOut.RelationID=CYNodesIn.RelationID
+ORDER BY Born DESC
+&lt;/CFQUERY&gt;
+</code></pre>
+
 <h1>
 <a name="example6" class="anchor" href="#example6"><span class="octicon octicon-link"></span></a>Example6</h1>
 
 <p>In this example we will create DB test nodes (with property) and relations (with property) between them to form a closed chain. It is a demonstration of creating CY:QUERY dynamically (on the fly).</p>
+
+<p>Dynamically created CY:QUERY using ColdFusion LOOP. This piece of code will create 900 nodes and 900 relations each with properties in just one dynamically created CY:QUERY and then it will dispay the time it took to create this DB set</p>
+
+<pre><code>&lt;cfset nodeNo=900&gt;
+&lt;cfset nodeStart=1&gt;
+
+&lt;CFOUTPUT&gt;
+&lt;CY:QUERY name="nodes"&gt;
+CREATE (node#nodeStart#:Node {name:'node#nodeStart#'})    //Create first innitial node
+&lt;CFLOOP index="x" from="2" to="#nodeNo#"&gt;
+    CREATE (node#x#:Node {name:'node#x#'})    //Create Nodes and
+    CREATE (node#Evaluate(x-1)#)-[:LINKED_TO {Relation: 'link#Evaluate(x-1)#'}]-&gt;(node#x#)    //Create Relations nodeNo-1 times
+&lt;/CFLOOP&gt;
+CREATE (node#nodeNo#)-[:LINKED_TO {Relation:'link#nodeNo#'}]-&gt;(node#NodeStart#)    //Create last node relation to close the chain with the first node
+&lt;/CY:QUERY&gt;
+
+Create Time: #CYExecutionTime# sec
+&lt;/CFOUTPUT&gt;
+</code></pre>
 
 <h1>
 <a name="license-and-acknowledgements" class="anchor" href="#license-and-acknowledgements"><span class="octicon octicon-link"></span></a>License and Acknowledgements</h1>
