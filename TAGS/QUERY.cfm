@@ -7,7 +7,7 @@ ColdFusion tag implementation for Cypher (Neo4j DB)
 Usage:
 - Include <cfimport taglib="./TAGS" prefix="CY"> line in your Cold Fusion source page
 - Save this file in the directory TAGS within your project and name it QUERY.CFM
-- Use CY:QUERY with Cyper same way as you would use CFQUERY with SQL eg:
+- Use CY:QUERY with Cypher same way as you would use CFQUERY with SQL eg:
 
     <CY:QUERY name="GetNodes">
 	  MATCH (n)
