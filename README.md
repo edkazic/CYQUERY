@@ -47,6 +47,8 @@ Another attribute (optional) is returnFormat="JSON" in case you need to return J
 In addition variables CYErrors and CYExecutionTime are returned as well as standard CF variables:
 
 ```
+#CYErrors#
+#CYExecutionTime#
 #Cnt.RecordCount#
 #Cnt.ColumnList#
 #Cnt.CurrentRow# (for dynamic parsing eg within LOOP)
