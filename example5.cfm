@@ -37,9 +37,7 @@ RETURN
 id(a) 		AS NodeID,
 labels(a) 	AS NodeLabel,
 a 			AS NodeProperty,
-id(r) 		AS RelationID,
-type(r) 	AS RelationType,
-r 			AS RelationProperty
+id(r) 		AS RelationID
 LIMIT 1000
 </CY:QUERY>
 
