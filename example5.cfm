@@ -60,7 +60,7 @@ CYNodesOut.RelationProperty	AS RelationProperty,
 CYNodesIn.NodeID 		    AS Node2ID,
 CYNodesIn.NodeLabel 	    AS Node2Label,
 CYNodesIn.NodeProperty	    AS Node2Property,
-lower(CYNodesOut.Born)      AS Born
+CYNodesOut.Born     		AS Born
 FROM CYNodesOut, CYNodesIn
 WHERE CYNodesOut.RelationID=CYNodesIn.RelationID
 ORDER BY Born DESC
