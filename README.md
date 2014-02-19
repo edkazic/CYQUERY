@@ -82,4 +82,12 @@ Example6
 In this example we will create DB test nodes (with property) and relations (with property) between them to form a closed chain. It is a demonstration of creating CY:QUERY dynamically (on the fly).
 
 
+License and Acknowledgements
+============================
+
+Made available under the MIT License (MIT).
+
+Copyright © Ed Kazic, CTO Radmis Pty Ltd 
+
+www.radmis.com
 
