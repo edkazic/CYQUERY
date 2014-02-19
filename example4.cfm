@@ -1,4 +1,4 @@
-<cfimport taglib="./TAGS" prefix="CY">
+<cfimport taglib="TAGS" prefix="CY">
 
 <!---Here we have functions for parsing different property types grouped together for more convenience--->
 <cfscript>

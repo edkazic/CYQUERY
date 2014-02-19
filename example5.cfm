@@ -1,4 +1,4 @@
-<cfimport taglib="./TAGS" prefix="CY">
+<cfimport taglib="TAGS" prefix="CY">
 
 <!---This time properties parsing functions are stored in the library and can be just included in the page---->
 <cfinclude template="TAGS/GetData.cfm">
@@ -28,7 +28,7 @@ LIMIT 1000
 </cfif>
 
 
-<!---Get data for nodes that have "incomming" (a)<--() relation defined---->
+<!---Get data for nodes that have "incoming" (a)<--() relation defined---->
 
 <CY:QUERY name="CYNodesIn">
 //Match all nodes and relations

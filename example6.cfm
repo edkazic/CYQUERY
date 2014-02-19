@@ -1,6 +1,6 @@
-<cfimport taglib="./TAGS" prefix="CY">
+<cfimport taglib="TAGS" prefix="CY">
 
-<!--- In this example we eill create nodes (with property) and relations (with property) between them to form a closed chain--->
+<!--- In this example we will create nodes (with property) and relations (with property) between them to form a closed chain--->
 <cfset DeleteAll=true>
 
 <!---If "DeleteAll" variable above is set to "true" this CY:QUERY would delete ALL nodes and ALL relations in your Neo4j DB------>
@@ -22,7 +22,7 @@
 
 
 <!----The following CY:QUERY will create nodeNo number of nodes with properties and relations between them forming closed chain--------->
-<!----The CY:QUERY is created dynamicaly using ColdFusion LOOP---->
+<!----The CY:QUERY is created dynamically using ColdFusion LOOP---->
 
 <cfset nodeNo=900><!---As of writing of this example Neo4j 2.0.1 is failing if there are more than 900 nodes and 900 relations together in one CY:QUERY ???---->
 <cfset nodeStart=1>

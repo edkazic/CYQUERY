@@ -1,4 +1,4 @@
-<cfimport taglib="./TAGS" prefix="CY">
+<cfimport taglib="TAGS" prefix="CY">
 
 <CFSET DeleteAll=false>
 
@@ -31,7 +31,7 @@
 
 <!----Create movies DB. ---->
 <!----The CY:QUERY named "movies" below will create movies set in the DB. If it is run multiple times each time whole movie set will be added to the DB.--->
-<!----Checking for the existance of the movie "The Matrix" can be used to check if the movies data has already been created in the DB---->
+<!----Checking for the existence of the movie "The Matrix" can be used to check if the movies data has already been created in the DB---->
 <CFIF check.MatrixCnt GT 0>
 <CFOUTPUT>The movie "The Matrix" is already in the DB<CFIF check.MatrixCnt GT 1> (#check.MatrixCnt# times)</CFIF>!<BR></CFOUTPUT>
 <CFELSE>
@@ -605,7 +605,7 @@ LIMIT 1000
 
 
 <!---
-The returned JSON Object is orgnised in complex combination of structures and arrays.
+The returned JSON Object is organised in complex combination of structures and arrays.
 
 The common data structure components (always present in the returned set) are:
 

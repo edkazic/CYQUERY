@@ -1,4 +1,4 @@
-<cfimport taglib="./TAGS" prefix="CY">
+<cfimport taglib="TAGS" prefix="CY">
 
 
 
@@ -85,8 +85,8 @@ Also we want to skip "path" column for this example so it is appropriate to make
 
 <!---Node1Property--->
 <!---
-Structure of propertie values (either node or relation) returned from Cypher query can be formated as simple value or as an Array
-Here is an example of relation property "role" that is defined as array of values (note squre brackets after role:)
+Structure of property values (either node or relation) returned from Cypher query can be formatted as simple value or as an Array
+Here is an example of relation property "role" that is defined as array of values (note square brackets after role:)
 
 CREATE
   (TomH)-[:ACTED_IN {roles:['Hero Boy', 'Father', 'Conductor', 'Hobo', 'Scrooge', 'Santa Claus']}]->(ThePolarExpress),
@@ -184,10 +184,10 @@ ReturnValueType ExampleReturnNames	ValueStructure
 --------------- ------------------- ----------------------
 id(node) 		NodeID				int
 labels(node) 	NodeLabel			array of labels
-node 			NodeProperty		structure of properties (a propery can be single or an array of values)
+node 			NodeProperty		structure of properties (a property can be single or an array of values)
 id(relation) 	RelationID			int
 type(relation) 	RelationType		string
-relation 		RelationProperty	structure of properties (a propery can be single or an array of values)
+relation 		RelationProperty	structure of properties (a property can be single or an array of values)
 path 			Path				array of structures: first node structure of properties,
 											  			 relation structure of properties and
 											  			 second node structure of properties
