@@ -31,53 +31,91 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h3>
-<a name="welcome-to-cyquery-pages" class="anchor" href="#welcome-to-cyquery-pages"><span class="octicon octicon-link"></span></a>Welcome to CY:QUERY Pages.</h3>
+        <h1>
+<a name="cyquery" class="anchor" href="#cyquery"><span class="octicon octicon-link"></span></a>CY:QUERY</h1>
 
-<hr><hr><table>
-<thead><tr>
-<th>table</th>
-<th>table2</th>
-</tr></thead>
-<tbody>
-<tr>
-<td>more</td>
-<td>table</td>
-</tr>
-<tr>
-<td>-----</td>
-<td>------</td>
-</tr>
-</tbody>
-</table><p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>Cypher and Neo4j Graph DB with Cold Fusion</p>
 
-<pre><code>$ cd your_repo_root/repo_name  
-$ git fetch origin
-$ git checkout gh-pages
+<p>This is a Neo4j library for Cold Fusion (tested with Adobe CF and Railo CF servers).</p>
+
+<p><a href="http://www.adobe.com/au/products/coldfusion-enterprise.html">http://www.adobe.com/au/products/coldfusion-enterprise.html</a></p>
+
+<p><a href="http://www.getrailo.org/">http://www.getrailo.org/</a> (open source)</p>
+
+<p>CY:CYPHER is built to support pure REST protocol to push Cypher query to the Neo4j DB server so there is a minimal chance of incompatibilities between Neo4j versions. The returning set is fully Cold Fusion Query object compatible and for data processing user can take the advantage of all standard Cold Fusion features.</p>
+
+<h1>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>USAGE</h1>
+
+<p>Create normal CF project, make sure you have TAGS directory with content from the repository under your project and on the CF page have import function:</p>
+
+<p><code>&lt;cfimport taglib="TAGS" prefix="CY"&gt;</code></p>
+
+<p>Optionaly few data parsing functions are available with include:</p>
+
+<p><code>&lt;cfinclude template="TAGS/GetData.cfm"&gt;</code></p>
+
+<h1>
+<a name="executing-cypher-queries" class="anchor" href="#executing-cypher-queries"><span class="octicon octicon-link"></span></a>Executing Cypher Queries</h1>
+
+<p>Cupher query can be executed as simple as:</p>
+
+<pre><code>&lt;CY:QUERY name="Cnt"&gt;
+    MATCH (n) //comment is supported as well
+    RETURN count(n) as NodeCount
+&lt;/CY:QUERY&gt;
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<p>The "name" is compulsory attribute for CY:QUERY and it is used as a reference to returned Cold Fusion object.
+The returned result set will be formatted in CF Query object and result of this query can be retrieved with:</p>
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<pre><code>#Cnt.NodeCount#
+</code></pre>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<p>Another attribute (optional) is returnFormat="JSON" in case you need to return JSON object instead of the CF object.</p>
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+<p>In addition variables CYErrors and CYExecutionTime are returned as well as standard CF variables:</p>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<pre><code>#Cnt.RecordCount#
+#Cnt.ColumnList#
+#Cnt.CurrentRow# (for dynamic parsing eg within LOOP)
+</code></pre>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<h1>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h1>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.
-<img src="http://www.radmis.com/Img/RadmisLogoNewSmall2.png" alt="test"></p>
+<p>With this distribution there are 6 examples and it is strongly recommended to go through them and learn about hidden gems.</p>
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+<h1>
+<a name="example1" class="anchor" href="#example1"><span class="octicon octicon-link"></span></a>Example1</h1>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<p>In this example we will learn how to create standard movies database.
+In addition there are functions for deleting all data from the DB, examples of CYErrors use to test your CY:QUERY execution, returning object in JSON format as well as analysis of returned data set.</p>
+
+<h1>
+<a name="example2" class="anchor" href="#example2"><span class="octicon octicon-link"></span></a>Example2</h1>
+
+<p>In Example 2 we will explore CF object return type for the movies database.</p>
+
+<h1>
+<a name="example3" class="anchor" href="#example3"><span class="octicon octicon-link"></span></a>Example3</h1>
+
+<p>In Example 3 we will explore various return data types within CF object and present few ideas for parsing data.</p>
+
+<h1>
+<a name="example4" class="anchor" href="#example4"><span class="octicon octicon-link"></span></a>Example4</h1>
+
+<p>In Example 4 we will further improve on parsing data functions and introduce Query of Query applied on CY:QUERY</p>
+
+<h1>
+<a name="example5" class="anchor" href="#example5"><span class="octicon octicon-link"></span></a>Example5</h1>
+
+<p>This time we will introduce powerful Query of Query "linked tables" feature for two CY:QUERY data sets.</p>
+
+<h1>
+<a name="example6" class="anchor" href="#example6"><span class="octicon octicon-link"></span></a>Example6</h1>
+
+<p>In this example we will create DB test nodes (with property) and relations (with property) between them to form a closed chain. It is a demonstration of creating CY:QUERY dynamically (on the fly).</p>
       </section>
     </div>
 
