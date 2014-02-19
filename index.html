@@ -1,36 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="CY:QUERY : Cypher Query - Cold Fusion support for Cypher and Neo4j Graph DB" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>CY:QUERY by edkazic</title>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>CY:QUERY</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
-
   <body>
+    <div class="wrapper">
+      <header>
+        <h1>CY:QUERY</h1>
+        <p>Cypher Query - Cold Fusion support for Cypher and Neo4j Graph DB</p>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/edkazic/CYQUERY">View on GitHub</a>
+        <p class="view"><a href="https://github.com/edkazic/CYQUERY">View the Project on GitHub <small>edkazic/CYQUERY</small></a></p>
 
-          <h1 id="project_title">CY:QUERY</h1>
-          <h2 id="project_tagline">Cypher Query - Cold Fusion support for Cypher and Neo4j Graph DB</h2>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/edkazic/CYQUERY/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/edkazic/CYQUERY/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+        <ul>
+          <li><a href="https://github.com/edkazic/CYQUERY/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/edkazic/CYQUERY/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/edkazic/CYQUERY">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
         <h1>
 <a name="cyquery" class="anchor" href="#cyquery"><span class="octicon octicon-link"></span></a>CY:QUERY</h1>
 
@@ -76,7 +73,9 @@ The returned result set will be formatted in CF Query object and result of this 
 
 <p>In addition variables CYErrors and CYExecutionTime are returned as well as standard CF variables:</p>
 
-<pre><code>#Cnt.RecordCount#
+<pre><code>#CYErrors#
+#CYExecutionTime#
+#Cnt.RecordCount#
 #Cnt.ColumnList#
 #Cnt.CurrentRow# (for dynamic parsing eg within LOOP)
 </code></pre>
@@ -292,17 +291,12 @@ Create Time: #CYExecutionTime# sec
 
 <p><a href="http://www.radmis.com">www.radmis.com</a></p>
       </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">CY:QUERY maintained by <a href="https://github.com/edkazic">edkazic</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/edkazic">edkazic</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
       </footer>
     </div>
-
+    <script src="javascripts/scale.fix.js"></script>
     
-
   </body>
 </html>
