@@ -6,7 +6,7 @@
 <!---In this example we will demonstrate linked tables feature in Query of Query
 We will use two CY:QUERY and then link them through the common relation---->
 
-<!---Get data for nodes that have "outgoing" (a)-->() relation defined---->
+<!---Get data for nodes that have "outgoing" (a)-[]->() relation defined---->
 
 <CY:QUERY name="CYNodesOut">
 //Match all nodes and relations
@@ -28,7 +28,7 @@ LIMIT 1000
 </cfif>
 
 
-<!---Get data for nodes that have "incoming" (a)<--() relation defined---->
+<!---Get data for nodes that have "incoming" (a)<-[]-() relation defined---->
 
 <CY:QUERY name="CYNodesIn">
 //Match all nodes and relations
