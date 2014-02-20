@@ -207,22 +207,38 @@ Dynamically created CY:QUERY using ColdFusion LOOP. This piece of code will crea
 
 
 ```
-<cfset nodeNo=900>
+<cfset nodeNo=1000>
 <cfset nodeStart=1>
 
-<CFOUTPUT>
 <CY:QUERY name="nodes">
-CREATE (node#nodeStart#:Node {name:'node#nodeStart#'})    //Create first innitial node
-<CFLOOP index="x" from="2" to="#nodeNo#">
-	CREATE (node#x#:Node {name:'node#x#'})    //Create Nodes and
-	CREATE (node#Evaluate(x-1)#)-[:LINKED_TO {Relation: 'link#Evaluate(x-1)#'}]->(node#x#)    //Create Relations nodeNo-1 times
-</CFLOOP>
-CREATE (node#nodeNo#)-[:LINKED_TO {Relation:'link#nodeNo#'}]->(node#NodeStart#)    //Create last node relation to close the chain with the first node
+	CREATE (node#nodeStart#:Node {name:'node#nodeStart#'}) 		//Create first innitial node
+	<CFLOOP index="x" from="#evaluate(nodeStart+1)#" to="#nodeNo#"> //Create Nodes and Relations nodeNo-nodeStart times
+		CREATE (node#Evaluate(x-1)#)-[:LINKED_TO {Relation: 'link#Evaluate(x-1)#'}]->(node#x#:Node {name:'node#x#'})
+	</CFLOOP>
+	CREATE (node#nodeNo#)-[:LINKED_TO {Relation:'link#nodeNo#'}]->(node#NodeStart#)		//Create last node relation to close the chain with the first node
 </CY:QUERY>
-
-Create Time: #CYExecutionTime# sec
-</CFOUTPUT>
 ```
+
+Example7
+========
+In this example we will create DB test nodes with Cypher parameters
+
+
+```
+<CY:QUERY name="nodes">
+"CREATE (n:Person { props } ) RETURN n",
+  "parameters" : {
+    "props" : [ {
+      "name" : "Name1",
+      "position" : "Position1"
+    }, {
+      "name" : "Name2",
+      "position" : "Position2"
+    } ]
+  }
+</CY:QUERY>
+```
+
 
 
 License and Acknowledgements
