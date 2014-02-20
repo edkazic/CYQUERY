@@ -32,6 +32,7 @@
     } ]
   }
 </CY:QUERY>
+</CFOUTPUT>
 
 <cfif CYErrors NEQ "">
 	<CFOUTPUT>#CYErrors#</CFOUTPUT>
@@ -46,7 +47,7 @@
 <!----The following CY:QUERY will create nodeNo-2 number of nodes with parametrizied nodes properties---->
 
 <cfset cfprops="">
-<cfloop index="x" from="3" to="#nodeNo#"> <!---Create parameters list---->
+<cfloop index="x" from="3" to="#nodeNo#"> <!---Create parameters list using CF loop---->
 	<cfset cfprops=cfprops&'{
 	"name":"Name#x#",
 	"position":"Position#x#"
@@ -54,12 +55,12 @@
 </cfloop>
 <cfset cfprops=left(cfprops,len(cfprops)-1)> <!---remove last comma--->
 
+<CFOUTPUT>
 <CY:QUERY name="nodes"> <!---create nodes--->
 "CREATE (n:Person { props } )",
-
     "parameters" : 	{
-    "props" : [ #cfprops# ]
-  					}
+    "props" : [ #cfprops# ] //pass cfprops variable with parameters
+					}
 </CY:QUERY>
 </CFOUTPUT>
 
