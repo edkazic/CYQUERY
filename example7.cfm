@@ -1,7 +1,7 @@
 <cfimport taglib="TAGS" prefix="CY">
 
 <!--- In this example we will create nodes (with property) using Cypher querying with parameters--->
-<cfset DeleteAll=true>
+<cfset DeleteAll=false>
 
 <!---If "DeleteAll" variable above is set to "true" this CY:QUERY would delete ALL nodes and ALL relations in your Neo4j DB------>
 <cfif DeleteAll>
