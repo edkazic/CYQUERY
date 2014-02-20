@@ -1,8 +1,8 @@
-<cfimport taglib="./TAGS" prefix="CY">
+<cfimport taglib="TAGS" prefix="CY">
 
 <CFSET DeleteAll=false>
 
-<!---If "DeleteAll" is set to true this will delete all nodes and and all relations in your Neo4j DB------>
+<!---If "DeleteAll" variable above is set to "true" this will delete ALL nodes and ALL relations in your Neo4j DB------>
 <CFIF DeleteAll>
 	<CY:QUERY name="DeleteAll">
 		MATCH (n)
@@ -29,12 +29,14 @@
 	<CFABORT>
 </CFIF>
 
-<!----If there is a movie "The Matrix" assumption is that movies data has been already created in the DB---->
+<!----Create movies DB. ---->
+<!----The CY:QUERY named "movies" below will create movies set in the DB. If it is run multiple times each time whole movie set will be added to the DB.--->
+<!----Checking for the existence of the movie "The Matrix" can be used to check if the movies data has already been created in the DB---->
 <CFIF check.MatrixCnt GT 0>
 <CFOUTPUT>The movie "The Matrix" is already in the DB<CFIF check.MatrixCnt GT 1> (#check.MatrixCnt# times)</CFIF>!<BR></CFOUTPUT>
 <CFELSE>
 
-<!----If there is no movie "The Matrix" create entire movies data DB--------->
+<!----If there is no movie "The Matrix" run CY:QUERY and create entire movies data DB--------->
 <CY:QUERY name="movies">
 CREATE (TheMatrix:Movie {title:'The Matrix', released:1999, tagline:'Welcome to the Real World'})
 CREATE (Keanu:Person {name:'Keanu Reeves', born:1964})
@@ -543,7 +545,7 @@ CREATE
   (JessicaThompson)-[:REVIEWED {summary:'You had me at Jerry', rating:92}]->(JerryMaguire)
 
 RETURN TheMatrix
-;
+
 </CY:QUERY>
 
 <CFIF CYErrors NEQ "">
@@ -554,23 +556,23 @@ RETURN TheMatrix
 </CFIF>
 
 
-<!---Get ALL data from the database---->
+<!---Get ALL data from the database in JSON format---->
+<!---note attribute returnFormat="JSON" in the CY:QUERY---->
 
-<CY:QUERY name="DumpAll" returnFormat="xJSON">
+<CY:QUERY name="DumpAll" returnFormat="JSON">
 //Match all nodes and relations
 MATCH p=(a)-[r]->(b)
-WHERE a :Person
 RETURN
-id(a) AS Node1ID,
-labels(a) AS Node1Label,
-a AS Node1Property,
-id(r) AS RelationID,
-type(r) AS Relation,
-r AS RelationProperty,
-id(b) AS Node2ID,
-labels(b) AS Node2Label,
-b AS Node2Property,
-p AS Path
+id(a) 		AS Node1ID,
+labels(a) 	AS Node1Label,
+a 			AS Node1Property,
+id(r) 		AS RelationID,
+type(r) 	AS RelationType,
+r 			AS RelationProperty,
+id(b) 		AS Node2ID,
+labels(b) 	AS Node2Label,
+b 			AS Node2Property,
+p 			AS Path
 LIMIT 1000
 
 //////////////////////////////////////
@@ -580,17 +582,17 @@ UNION
 //Match all nodes with no relations
 MATCH (n) where not( n--() )
 RETURN
-id(n) AS Node1ID,
-labels(n) AS Node1Label,
-n AS Node1Property ,
-null AS RelationID,
-null AS Relation,
-null AS RelationProperty,
-null AS Node2ID,
-null AS Node2Label,
-null AS Node2Property,
-null AS Path
-LIMIT 100
+id(n) 		AS Node1ID,
+labels(n) 	AS Node1Label,
+n 			AS Node1Property,
+null 		AS RelationID,
+null 		AS RelationType,
+null 		AS RelationProperty,
+null 		AS Node2ID,
+null 		AS Node2Label,
+null 		AS Node2Property,
+null 		AS Path
+LIMIT 1000
 </CY:QUERY>
 
 <CFIF CYErrors NEQ "">
@@ -598,18 +600,34 @@ LIMIT 100
 	<CFABORT>
 </CFIF>
 
-<!---Display entire movies data object---->
+<!---Display entire movies data object in JSON format---->
 <CFDUMP var="#DumpAll#">
 
 
 <!---
-Return Types
+The returned JSON Object is organised in complex combination of structures and arrays.
 
+The common data structure components (always present in the returned set) are:
+
+errors[1] - Array of Errors. It is empty if there are no errors.
+results[1].columns[] - Array of Column names as defined in Cypher query.
+results[1].data[records].row[columns] - Array of records each representing set of columns from the Cypher query.
+										This can be seen as a table with dimensions records x columns
+
+
+Examining columns content there could be various formats returned:
+
+ReturnValueType ExampleReturnNames	ValueStructure
+--------------- ------------------- ----------------------
 id(node) 		NodeID				int
-labels(node) 	NodeLanel			array of labels
-node 			NodeProperty		structure of properties
+labels(node) 	NodeLabel			array of labels
+node 			NodeProperty		structure of properties (a propery can be single or an array of values)
 id(relation) 	RelationID			int
-type(relation) 	Relation			string
-relation 		RelationProperty	structure of properties
-path 			Path				array of: first node structure, relation structure and second node structure
+type(relation) 	RelationType		string
+relation 		RelationProperty	structure of properties (a propery can be single or an array of values)
+path 			Path				array of structures: first node structure of properties,
+											  			 relation structure of properties and
+											  			 second node structure of properties
 --->
+
+
