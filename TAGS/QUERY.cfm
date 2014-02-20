@@ -25,8 +25,8 @@ Usage:
 Author: Ed Kazic
 Radmis Pty Ltd, www.radmis.com
 
-14/02/2014 Version 1.0 innitial release
-
+14/02/2014 Version 1.00 innitial release
+20/02/2014 Version 1.01 added support for Cypher parameters
 -------------------------------------------------------------------------->
 
 <cfsetting enablecfoutputonly="No" showdebugoutput="Yes" requesttimeout="600000">
@@ -61,7 +61,10 @@ Radmis Pty Ltd, www.radmis.com
 
 	<cfif Caller.CYErrors EQ "">
 		<!-----Build CY:QUERY statement-------->
-        <cfset stFields = {"statements":[{"statement":"#thisTag.GeneratedContent#"}]}>
+		<cfset cystatement=REReplace(thisTag.GeneratedContent,"//.*?[^#chr(13)#]#chr(13)#"," ","ALL")>
+		<cfset cystatement=Trim(ReplaceList(cystatement,"#chr(13)#,#chr(10)#,#chr(9)#","#chr(32)#,#chr(32)#,#chr(32)#"))>
+		<cfif  left(cystatement,1) NEQ '"'><cfset cystatement='"'&#cystatement#&'"'></cfif>
+        <cfset stFields = '{"statements":[{"statement":#cystatement#}]}'>
 		<cfset cyQuery='#Attributes.name#'>
         <cfset "Caller.#cyQuery#"="">
 
@@ -69,7 +72,7 @@ Radmis Pty Ltd, www.radmis.com
 		<cftry>
 		<cfhttp url="#URLDB#" method="post" result="httpResp" timeout="600000" >
 		    <cfhttpparam type="HEADER" name="Content-Type" value="application/json; charset=UTF-8">
-	    	<cfhttpparam type="body" value="#serializeJSON(stFields)#">
+	    	<cfhttpparam type="body" value="#stFields#">
 		</cfhttp>
 
 		<!--------Get DB response---------------->

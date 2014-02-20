@@ -1,6 +1,6 @@
 <cfimport taglib="TAGS" prefix="CY">
 
-<!--- In this example we will create nodes (with property) and relations (with property) between them to form a closed chain--->
+<!--- In this example we will create nodes (with property) using Cypher querying with parameters--->
 <cfset DeleteAll=true>
 
 <!---If "DeleteAll" variable above is set to "true" this CY:QUERY would delete ALL nodes and ALL relations in your Neo4j DB------>
@@ -19,21 +19,47 @@
 </cfif>
 
 
-
-
-<!----The following CY:QUERY will create nodeNo number of nodes with properties and relations between them forming closed chain--------->
-<!----The CY:QUERY is created dynamically using ColdFusion LOOP---->
-
-<cfset nodeNo=100><!---As of writing of this example Neo4j 2.0.1 is failing if there are more than 1800 nodes and 1800 relations together in one CY:QUERY ???---->
-<cfset nodeStart=1>
-
 <CFOUTPUT>
-<CY:QUERY name="nodes">
-	CREATE (node#nodeStart#:Node {name:'node#nodeStart#'}) 				//Create first innitial node
-	<CFLOOP index="x" from="#evaluate(nodeStart+1)#" to="#nodeNo#">  					//Create Nodes and Relations nodeNo-1 times
-		CREATE (node#Evaluate(x-1)#)-[:LINKED_TO {Relation: 'link#Evaluate(x-1)#'}]->(node#x#:Node {name:'node#x#'})
-	</CFLOOP>
-	CREATE (node#nodeNo#)-[:LINKED_TO {Relation:'link#nodeNo#'}]->(node#NodeStart#)		//Create last node relation to close the chain with the first node
+<CY:QUERY name="nodes" returnFormat="xJSON">
+"CREATE (n:Person { props } ) RETURN n",
+  "parameters" : {
+    "props" : [ {
+      "name" : "Name1",
+      "position" : "Position1"
+    }, {
+      "name" : "Name2",
+      "position" : "Position2"
+    } ]
+  }
+</CY:QUERY>
+
+<cfif CYErrors NEQ "">
+	<CFOUTPUT>#CYErrors#</CFOUTPUT>
+	<CFABORT>
+</cfif>
+<CFOUTPUT>Create 2 nodes Time: #CYExecutionTime# sec<BR></CFOUTPUT>
+
+
+
+<cfset nodeNo=1000>
+
+<!----The following CY:QUERY will create nodeNo-2 number of nodes with parametrizied nodes properties---->
+
+<cfset cfprops="">
+<cfloop index="x" from="3" to="#nodeNo#"> <!---Create parameters list---->
+	<cfset cfprops=cfprops&'{
+	"name":"Name#x#",
+	"position":"Position#x#"
+	},'>
+</cfloop>
+<cfset cfprops=left(cfprops,len(cfprops)-1)> <!---remove last comma--->
+
+<CY:QUERY name="nodes"> <!---create nodes--->
+"CREATE (n:Person { props } )",
+
+    "parameters" : 	{
+    "props" : [ #cfprops# ]
+  					}
 </CY:QUERY>
 </CFOUTPUT>
 
@@ -41,7 +67,7 @@
 	<CFOUTPUT>#CYErrors#</CFOUTPUT>
 	<CFABORT>
 </cfif>
-	<CFOUTPUT>Create Time: #CYExecutionTime# sec<BR></CFOUTPUT><!---Display time required to execute the CY:QUERY--->
+	<CFOUTPUT>Create #evaluate(nodeNo-2)# nodes time: #CYExecutionTime# sec<BR></CFOUTPUT><!---Display time required to execute the CY:QUERY--->
 
 
 
