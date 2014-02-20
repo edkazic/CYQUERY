@@ -20,7 +20,7 @@
 
 
 <CFOUTPUT>
-<CY:QUERY name="nodes" returnFormat="xJSON">
+<CY:QUERY name="nodes">
 "CREATE (n:Person { props } ) RETURN n",
   "parameters" : {
     "props" : [ {
