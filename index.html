@@ -265,21 +265,35 @@ ORDER BY Born DESC
 
 <p>Dynamically created CY:QUERY using ColdFusion LOOP. This piece of code will create 900 nodes and 900 relations each with properties in just one dynamically created CY:QUERY and then it will dispay the time it took to create this DB set</p>
 
-<pre><code>&lt;cfset nodeNo=900&gt;
+<pre><code>&lt;cfset nodeNo=1000&gt;
 &lt;cfset nodeStart=1&gt;
 
-&lt;CFOUTPUT&gt;
 &lt;CY:QUERY name="nodes"&gt;
-CREATE (node#nodeStart#:Node {name:'node#nodeStart#'})    //Create first innitial node
-&lt;CFLOOP index="x" from="2" to="#nodeNo#"&gt;
-    CREATE (node#x#:Node {name:'node#x#'})    //Create Nodes and
-    CREATE (node#Evaluate(x-1)#)-[:LINKED_TO {Relation: 'link#Evaluate(x-1)#'}]-&gt;(node#x#)    //Create Relations nodeNo-1 times
-&lt;/CFLOOP&gt;
-CREATE (node#nodeNo#)-[:LINKED_TO {Relation:'link#nodeNo#'}]-&gt;(node#NodeStart#)    //Create last node relation to close the chain with the first node
+    CREATE (node#nodeStart#:Node {name:'node#nodeStart#'})      //Create first innitial node
+    &lt;CFLOOP index="x" from="#evaluate(nodeStart+1)#" to="#nodeNo#"&gt; //Create Nodes and Relations nodeNo-nodeStart times
+        CREATE (node#Evaluate(x-1)#)-[:LINKED_TO {Relation: 'link#Evaluate(x-1)#'}]-&gt;(node#x#:Node {name:'node#x#'})
+    &lt;/CFLOOP&gt;
+    CREATE (node#nodeNo#)-[:LINKED_TO {Relation:'link#nodeNo#'}]-&gt;(node#NodeStart#)     //Create last node relation to close the chain with the first node
 &lt;/CY:QUERY&gt;
+</code></pre>
 
-Create Time: #CYExecutionTime# sec
-&lt;/CFOUTPUT&gt;
+<h1>
+<a name="example7" class="anchor" href="#example7"><span class="octicon octicon-link"></span></a>Example7</h1>
+
+<p>In this example we will create DB test nodes with Cypher parameters</p>
+
+<pre><code>&lt;CY:QUERY name="nodes"&gt;
+"CREATE (n:Person { props } ) RETURN n",
+  "parameters" : {
+    "props" : [ {
+      "name" : "Name1",
+      "position" : "Position1"
+    }, {
+      "name" : "Name2",
+      "position" : "Position2"
+    } ]
+  }
+&lt;/CY:QUERY&gt;
 </code></pre>
 
 <h1>
