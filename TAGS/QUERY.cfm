@@ -33,7 +33,8 @@ Radmis Pty Ltd, www.radmis.com
 
 <!-----Execute at the end of CY:QUERY tag----------------------------------------------->
 <cfif thisTag.ExecutionMode is 'end'>
-
+<cfset Caller.CYExecutionTime="">
+<cfset tickStart=GetTickCount()>
 	   <!---Check for compulsory parameter---->
 <cfif IsDefined("Attributes.name")>
 
@@ -140,7 +141,8 @@ Radmis Pty Ltd, www.radmis.com
 <cfelse>
 	<cfset Caller.CYErrors='ERROR: Query name is compulsory? eg. <CY:QUERY name="qname">...</CY:QUERY> '>
 </cfif>
-
+<CFSET tickEnd=GetTickCount()>
+<cfset Caller.CYExecutionTime=(tickEnd-tickStart)/1000>
 <cfset thisTag.GeneratedContent=""> <!---Remove the content within QUERY TAG---->
 
 </cfif>
