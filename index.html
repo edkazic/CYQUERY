@@ -297,6 +297,22 @@ ORDER BY Born DESC
 </code></pre>
 
 <h1>
+<a name="example8" class="anchor" href="#example8"><span class="octicon octicon-link"></span></a>Example8</h1>
+
+<p>In this example we will implement simple DB backup system. The complete Neo4j DB is saved to the text file and then compressed (zip) to save spacee.</p>
+
+<p>The entire DB is stored in the text file. There are two types of data blocks: nodes with relations (REL) and nodes without relations (REL). They are stored in the format:</p>
+
+<pre><code>REL:|Node1Label|Node2Label|RelationType|Path
+NOD:|Node1Label|Node1Property
+</code></pre>
+
+<h1>
+<a name="example9" class="anchor" href="#example9"><span class="octicon octicon-link"></span></a>Example9</h1>
+
+<p>In this example we have Backup Restore functionality for backup files created in previous example. This backup functionality can not restore original Node ID and Relation ID but all the relations, nodes and properties are preserved.</p>
+
+<h1>
 <a name="license-and-acknowledgements" class="anchor" href="#license-and-acknowledgements"><span class="octicon octicon-link"></span></a>License and Acknowledgements</h1>
 
 <p>Made available under the MIT License (MIT).</p>
