@@ -239,6 +239,21 @@ In this example we will create DB test nodes with Cypher parameters
 </CY:QUERY>
 ```
 
+Example8
+========
+In this example we will implement simple DB backup system. The complete Neo4j DB is saved to the text file and then compressed (zip) to save spacee.
+
+The entire DB is stored in the text file. There are two types of data blocks: nodes with relations (REL) and nodes without relations (REL). They are stored in the format:
+
+```
+REL:|Node1Label|Node2Label|RelationType|Path
+NOD:|Node1Label|Node1Property
+```
+
+Example9
+========
+In this example we have Backup Restore functionality for backup files created in previous example. This backup functionality can not restore original Node ID and Relation ID but all the relations, nodes and properties are preserved.
+
 
 
 License and Acknowledgements
