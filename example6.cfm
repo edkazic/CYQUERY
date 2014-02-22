@@ -24,16 +24,16 @@
 <!----The following CY:QUERY will create nodeNo number of nodes with properties and relations between them forming closed chain--------->
 <!----The CY:QUERY is created dynamically using ColdFusion LOOP---->
 
-<cfset nodeNo=100><!---As of writing of this example Neo4j 2.0.1 is failing if there are more than 1800 nodes and 1800 relations together in one CY:QUERY ???---->
+<cfset nodeNo=1000><!---As of writing of this example Neo4j 2.0.1 is failing if there are more than 1800 nodes and 1800 relations together in one CY:QUERY ???---->
 <cfset nodeStart=1>
 
 <CFOUTPUT>
 <CY:QUERY name="nodes">
-	CREATE (node#nodeStart#:Node {name:'node#nodeStart#'}) 				//Create first innitial node
-	<CFLOOP index="x" from="#evaluate(nodeStart+1)#" to="#nodeNo#">  					//Create Nodes and Relations nodeNo-1 times
+	CREATE (node#nodeStart#:Node {name:'node#nodeStart#'})
+	<CFLOOP index="x" from="#evaluate(nodeStart+1)#" to="#nodeNo#">
 		CREATE (node#Evaluate(x-1)#)-[:LINKED_TO {Relation: 'link#Evaluate(x-1)#'}]->(node#x#:Node {name:'node#x#'})
 	</CFLOOP>
-	CREATE (node#nodeNo#)-[:LINKED_TO {Relation:'link#nodeNo#'}]->(node#NodeStart#)		//Create last node relation to close the chain with the first node
+	CREATE (node#nodeNo#)-[:LINKED_TO {Relation:'link#nodeNo#'}]->(node#NodeStart#)
 </CY:QUERY>
 </CFOUTPUT>
 

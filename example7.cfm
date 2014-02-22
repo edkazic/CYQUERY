@@ -21,7 +21,7 @@
 
 <CFOUTPUT>
 <CY:QUERY name="nodes">
-"CREATE (n:Person { props } ) RETURN n",
+"CREATE (n:People { props } ) RETURN n",
   "parameters" : {
     "props" : [ {
       "name" : "Name1",
@@ -57,7 +57,7 @@
 
 <CFOUTPUT>
 <CY:QUERY name="nodes"> <!---create nodes--->
-"CREATE (n:Person { props } )",
+"CREATE (n:People { props } )",
     "parameters" : 	{
     "props" : [ #cfprops# ] //pass cfprops variable with parameters
 					}

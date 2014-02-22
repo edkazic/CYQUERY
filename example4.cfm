@@ -1,6 +1,6 @@
 <cfimport taglib="TAGS" prefix="CY">
 
-<!---Here we have functions for parsing different property types grouped together for more convenience--->
+<!---Here we have functions for parsing different property types grouped together for convenience--->
 <cfscript>
 /*----------------------*/
 function getID(data) {

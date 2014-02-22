@@ -15,11 +15,11 @@ Usage:
 	  LIMIT 100
     </CY:QUERY>
 
-- The query will return object GetNodes (attribute name) that is formated as Cold Fusion CFQUERY object
+- The query will return object GetNodes (query name) that is formated as Cold Fusion CFQUERY object
 - Use returnFormat="JSON" (eg. <CY:QUERY name="GetNodes" returnFormat="JSON">)
   if you would like to return JSON object instead of CF query object
 - Variable CYErrors will be returned with any errors or it will be empty for no errors
-- Variable CYExecutionTime contains time in seconds
+- Variable CYExecutionTime contains execution time in seconds
 - If required change Connection URLDB below for different Neo4j server location
 
 Author: Ed Kazic
@@ -88,8 +88,10 @@ Radmis Pty Ltd, www.radmis.com
 
 	<cfif Caller.CYErrors NEQ "" AND isDefined("jsonData.Errors")>
 		<!--------Parse Error Message------------>
+		<cfif not arrayIsEmpty(jsonData.Errors)>
 		<cfset err=jsonData.Errors>
 		<cfset err1=err[1].message>
+		<cftry>
 		<cfset poz2=Len(err1)-Find('"',reverse(err1),1)>  	<!---find last--->
 		<cfset poz1=Len(err1)-Find('"',reverse(err1),Len(err1)-poz2+1)>
 		<cfset poz3=Find('column',err1,1)>
@@ -102,6 +104,11 @@ Radmis Pty Ltd, www.radmis.com
 	 		<cfset Caller.CYErrors="#err[1].code#<br>#err2#<BR>...<br>#err5#<FONT COLOR=RED>#err6#</FONT><br>...">
 		<cfelse>
 	 		<cfset Caller.CYErrors="#err[1].code#<br>#err[1].message#">
+		</cfif>
+		<cfcatch><cfset Caller.CYErrors="#err[1].code#<br>#err[1].message#"></cfcatch>
+		</cftry>
+		<cfelse>
+			<cfset Caller.CYErrors="Error: ???">
 		</cfif>
 	</cfif>
 
@@ -156,11 +163,13 @@ Radmis Pty Ltd, www.radmis.com
 <cfelse>
 	<cfset Caller.CYErrors='ERROR: Query name is compulsory? eg. <CY:QUERY name="qname">...</CY:QUERY> '>
 </cfif>
-
-
-<CFCATCH><cfset Caller.CYErrors='ERROR: Unknown Processing Error?'></CFCATCH>
+	<CFCATCH>
+		<cfif Caller.CYErrors EQ "">
+			<cfset Caller.CYErrors='ERROR: Unknown Processing Error?'>
+		</cfif>
+	</CFCATCH>
 </CFTRY>
-<CFSET tickEnd=GetTickCount()>
+<cfset tickEnd=GetTickCount()>
 <cfset Caller.CYExecutionTime=(tickEnd-tickStart)/1000>
 <cfset thisTag.GeneratedContent=""> <!---Remove the content within QUERY TAG---->
 
