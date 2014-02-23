@@ -56,7 +56,7 @@ In addition variables CYErrors and CYExecutionTime are returned as well as stand
 
 Examples
 ========
-With this distribution there are 6 examples and it is strongly recommended to go through them and learn about hidden gems.
+With this distribution there are 9 examples and it is strongly recommended to go through them and learn about hidden gems.
 
 Example1
 ========
