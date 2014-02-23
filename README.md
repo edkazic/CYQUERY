@@ -243,12 +243,15 @@ Example8
 ========
 In this example we will implement simple DB backup system. The complete Neo4j DB is saved to the text file and then compressed (zip) to save spacee.
 
-The entire DB is stored in the text file. There are two types of data blocks: nodes with relations (REL) and nodes without relations (REL). They are stored in the format:
+The entire DB is stored in the text file. There are two types of text data blocks: nodes with relations (REL) and nodes without relations (NOD). They are stored in the format:
 
 ```
 REL:|Node1Label|Node2Label|RelationType|Path
 NOD:|Node1Label|Node1Property
 ```
+
+This backup strategy is not very efficient but the purpose is to show some of the Cypher and CF integration techniques. It is using lots of data parsing which are expensive in terms of execution. Still it can be useful for small size databases.
+
 
 Example9
 ========
