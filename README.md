@@ -255,7 +255,7 @@ This backup strategy is not very efficient but the purpose is to show some of th
 
 Example9
 ========
-In this example we have Backup Restore functionality for backup files created in previous example. This backup functionality can not restore original Node ID and Relation ID but all the relations, nodes and properties are preserved.
+In this example we have Backup Restore functionality for backup files created in previous example. This backup functionality can not restore original Node ID and Relation ID but all the nodes, labels, relations, types and properties are preserved.
 
 
 
