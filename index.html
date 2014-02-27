@@ -275,6 +275,8 @@ ORDER BY Born DESC
     &lt;/CFLOOP&gt;
     CREATE (node#nodeNo#)-[:LINKED_TO {Relation:'link#nodeNo#'}]-&gt;(node#NodeStart#)     //Create last node relation to close the chain with the first node
 &lt;/CY:QUERY&gt;
+
+&lt;CFOUTPUT&gt;Create Time: #CYExecutionTime# sec&lt;BR&gt;&lt;/CFOUTPUT&gt;
 </code></pre>
 
 <h1>
