@@ -217,6 +217,8 @@ Dynamically created CY:QUERY using ColdFusion LOOP. This piece of code will crea
 	</CFLOOP>
 	CREATE (node#nodeNo#)-[:LINKED_TO {Relation:'link#nodeNo#'}]->(node#NodeStart#)		//Create last node relation to close the chain with the first node
 </CY:QUERY>
+
+<CFOUTPUT>Create Time: #CYExecutionTime# sec<BR></CFOUTPUT>
 ```
 
 Example7
