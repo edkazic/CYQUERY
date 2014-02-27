@@ -9,7 +9,7 @@ http://www.adobe.com/au/products/coldfusion-enterprise.html
 
 http://www.getrailo.org/ (open source)
 
-CY:CYPHER is built to support pure REST protocol to push Cypher query to the Neo4j DB server so there is a minimal chance of incompatibilities between Neo4j versions. The returning set is fully Cold Fusion Query object compatible and for data processing user can take the advantage of all standard Cold Fusion features.
+CY:QUERY is built to support pure REST protocol to push Cypher query to the Neo4j DB server so there is a minimal chance of incompatibilities between Neo4j versions. The returning set is fully Cold Fusion Query object compatible and for data processing user can take the advantage of all standard Cold Fusion features.
 
 USAGE
 =====
